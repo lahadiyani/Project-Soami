@@ -1,525 +1,560 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soami Project</title>
-    <!-- Font Awesome 6 CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2eRCAEwhlM/W6iU0T/Lw2q4+Jp4z60zXqLpGzI3k1g2P9P5K5I5L5l5/5A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Tailwind CSS CDN -->
+    <title>Cosmic AI Universe & Aggregator Hub</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html {
-            scroll-behavior: smooth;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+        
         body {
             font-family: 'Inter', sans-serif;
+            background: #0a0e17;
+            color: #e0e0e0;
             overflow-x: hidden;
         }
-
-        /* Dark Theme (Default) */
-        body.dark {
-            background-color: #000;
-            color: #fff;
+        
+        .cosmic-bg {
+            background: radial-gradient(ellipse at center, #0a0e17 0%, #05070c 100%);
         }
-        .dark .parallax-layer.layer-1 {
-            background: radial-gradient(circle at center, rgba(2, 6, 23, 0.4) 0%, rgba(2, 6, 23, 0) 70%);
+        
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(0, 195, 255, 0.7), 
+                         0 0 20px rgba(0, 195, 255, 0.5),
+                         0 0 30px rgba(0, 195, 255, 0.3);
         }
-        .dark .parallax-layer.layer-2 {
-            background: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3CradialGradient id='g1' cx='50%25' cy='50%25' r='50%25' fx='50%25' fy='50%25'%3E%3Cstop offset='0%25' stop-color='%231f2937' /%3E%3Cstop offset='100%25' stop-color='%230f172a' /%3E%3C/radialGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='100' height='100' fill='url(%23g1)'/%3E%3C/svg%3E");
-            background-size: cover;
-            opacity: 0.1;
-            filter: blur(1px);
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #00c3ff, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .dark .parallax-layer.layer-3 {
-            background: radial-gradient(circle at center, rgba(147, 51, 234, 0.1) 0%, rgba(147, 51, 234, 0) 50%);
-            opacity: 0.5;
+        
+        .card-glow {
+            box-shadow: 0 0 15px rgba(0, 195, 255, 0.2);
+            transition: all 0.3s ease;
         }
-        .dark .bg-black-translucent {
-            background-color: rgba(0, 0, 0, 0.5);
+        
+        .card-glow:hover {
+            box-shadow: 0 0 25px rgba(0, 195, 255, 0.4);
+            transform: translateY(-5px);
         }
-        .dark .card-item {
-            background-color: rgba(31, 41, 55, 0.6);
-            border-color: #374151;
+        
+        .orbit {
+            animation: orbit 20s linear infinite;
         }
-        .dark .section-bg {
-            background-color: rgba(0, 0, 0, 0.5);
+        
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
         }
-        .dark .bg-gradient-primary {
-            background-image: linear-gradient(to right, #8b5cf6, #6366f1);
+        
+        .pulse {
+            animation: pulse 3s infinite;
         }
-        .dark .bg-gradient-tier-2 {
-            background-image: linear-gradient(to bottom right, #5b21b6, #3730a3);
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 195, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 195, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 195, 255, 0); }
         }
-
-        /* Light Theme */
-        body.light {
-            background-color: #f3f4f6;
-            color: #1f2937;
+        
+        .twinkle {
+            animation: twinkle 4s infinite;
         }
-        .light .bg-black-translucent {
-            background-color: rgba(255, 255, 255, 0.5);
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
         }
-        .light .card-item {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-color: #d1d5db;
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        .light .section-bg {
-            background-color: rgba(255, 255, 255, 0.5);
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .light .text-gray-300 { color: #4b5563; }
-        .light .text-white { color: #1f2937; }
-        .light .text-purple-400 { color: #5B21B6; }
-        .light .text-indigo-400 { color: #6366F1; }
-        .light .hover\:text-white:hover { color: #000; }
-        .light .hover\:shadow-purple-500\/20:hover { box-shadow: 0 10px 15px -3px rgb(129 140 248 / 0.1), 0 4px 6px -4px rgb(129 140 248 / 0.1); }
-        .light .parallax-layer.layer-1 {
-            background: radial-gradient(circle at center, rgba(238, 242, 255, 0.8) 0%, rgba(238, 242, 255, 0) 70%);
+        
+        /* Reduced motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .orbit, .pulse, .twinkle {
+                animation: none;
+            }
         }
-        .light .parallax-layer.layer-2 {
-            background: none;
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .light .parallax-layer.layer-3 {
-            background: radial-gradient(circle at center, rgba(199, 210, 254, 0.3) 0%, rgba(199, 210, 254, 0) 50%);
-            opacity: 0.8;
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0e17;
         }
-        .light .bg-gradient-primary {
-            background-image: linear-gradient(to right, #6366F1, #8b5cf6);
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00c3ff;
+            border-radius: 4px;
         }
-        .light .bg-gradient-tier-2 {
-            background-image: linear-gradient(to bottom right, #a5b4fc, #c4b5fd);
-            color: #1f2937;
-        }
-        .light .bg-gradient-tier-2 .text-white {
-            color: #1f2937;
-        }
-        .light .bg-gradient-tier-2 .text-gray-200 {
-            color: #374151;
-        }
-        .light .bg-gradient-tier-2 .text-gray-400 {
-            color: #4b5563;
-        }
-
-        /* Hamburger Menu Animation */
-        .hamburger-menu {
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-        }
-        .hamburger-menu.is-active {
-            transform: translateX(0);
-        }
-
-        /* Three.js Canvas Styles */
-        #three-canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
+        
+        /* Star cursor effect */
+        .cursor-star {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background-color: #00c3ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
     </style>
 </head>
-<body class="dark bg-black text-white min-h-screen relative">
+<body class="cosmic-bg">
+    <!-- Star cursor -->
+    <div id="cursor-star" class="cursor-star"></div>
     
-    <!-- Parallax Background Layers -->
-    <div id="parallax-container" class="fixed inset-0 overflow-hidden -z-10">
-        <div id="layer-1" class="parallax-layer layer-1"></div>
-        <div id="layer-2" class="parallax-layer layer-2"></div>
-        <div id="layer-3" class="parallax-layer layer-3"></div>
-    </div>
-
-    <!-- Header & Navbar -->
-    <header id="navbar" class="fixed w-full z-50 top-0 left-0 transition-all duration-300 opacity-0 bg-black-translucent backdrop-blur-xl">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#hero" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500">
-                Soami Project
-            </a>
+    <!-- Three.js Canvas -->
+    <div id="universe-canvas" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+    
+    <!-- Header -->
+    <header class="relative z-10 py-6 px-4 md:px-8 lg:px-16">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-cyan-400 twinkle"></div>
+                <h1 class="text-2xl md:text-3xl font-bold text-white">Soami<span class="gradient-text"> Project</span></h1>
+            </div>
             
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#research" class="text-gray-300 hover:text-white transition duration-300">Research</a>
-                <a href="#contributions" class="text-gray-300 hover:text-white transition duration-300">Kontribusi</a>
-                <a href="#community" class="text-gray-300 hover:text-white transition duration-300">Community</a>
-                <!-- Dark/Light Mode Toggle -->
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-700 transition-colors">
-                    <!-- Sun Icon for Light Mode -->
-                    <i id="sun-icon" class="fa-solid fa-sun text-yellow-500" style="display: none;"></i>
-                    <!-- Moon Icon for Dark Mode -->
-                    <i id="moon-icon" class="fa-solid fa-moon text-gray-300"></i>
-                </button>
-            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-300 hover:text-cyan-300 transition-colors">Home</a>
+                <a href="#" class="text-gray-300 hover:text-cyan-300 transition-colors">Agents</a>
+                <a href="#" class="text-gray-300 hover:text-cyan-300 transition-colors">Tools</a>
+                <a href="#" class="text-gray-300 hover:text-cyan-300 transition-colors">Playground</a>
+                <a href="#" class="text-gray-300 hover:text-cyan-300 transition-colors">Contact</a>
+            </nav>
+            
+            <button class="md:hidden text-cyan-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
 
-            <!-- Hamburger Menu Mobile -->
-            <div class="md:hidden">
-                <button id="hamburger-btn" class="text-gray-300 hover:text-white focus:outline-none">
-                    <i class="fa-solid fa-bars text-2xl"></i>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button class="border border-cyan-400 text-cyan-300 font-semibold py-3 px-6 rounded-lg hover:bg-cyan-400 hover:bg-opacity-10 transition-colors">
+                    Sign In
+                </button>
+                <button class="bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity pulse relative overflow-hidden group">
+                    <span class="relative z-10">Sign Up</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
             </div>
-        </nav>
+        </div>
     </header>
-
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="hamburger-menu fixed top-0 right-0 h-full w-64 bg-gray-900/90 backdrop-blur-xl z-[60] flex flex-col pt-20 shadow-lg">
-        <button id="close-btn" class="absolute top-4 right-4 text-gray-300 hover:text-white focus:outline-none">
-            <i class="fa-solid fa-xmark text-3xl"></i>
-        </button>
-        <a href="#research" class="block px-6 py-4 text-xl font-semibold text-gray-300 hover:text-white">Research</a>
-        <a href="#contributions" class="block px-6 py-4 text-xl font-semibold text-gray-300 hover:text-white">Kontribusi</a>
-        <a href="#community" class="block px-6 py-4 text-xl font-semibold text-gray-300 hover:text-white">Community</a>
-    </div>
-
+    
     <!-- Hero Section -->
-    <section id="hero" class="flex flex-col items-center justify-center h-screen text-center px-4 relative z-10">
-        <h1 id="hero-title" class="text-5xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500 opacity-0">
-            Membangun Agen AI Super
-        </h1>
-        <p class="max-w-2xl text-lg md:text-xl text-gray-300">
-            Soami Project adalah inisiatif kolaboratif untuk menciptakan AI Agent super yang membantu manusia di seluruh kategori kecerdasan buatan.
-        </p>
-        <div class="mt-8 opacity-0 relative w-full max-w-lg h-64 md:h-80" id="hero-model-container">
-            <!-- Three.js Canvas akan dimuat di sini -->
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="py-20 grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-16 relative z-10 section-bg backdrop-blur-sm">
-        <div class="card-item p-8 rounded-2xl shadow-lg hover:shadow-purple-500/20 border opacity-0">
-            <h3 class="text-2xl font-semibold mb-4 text-purple-400">Arsitektur Modular</h3>
-            <p class="text-gray-300">Kami mengembangkan agen AI dengan arsitektur modular, memungkinkan integrasi fitur baru secara mulus dan skalabilitas tak terbatas.</p>
-        </div>
-        <div class="card-item p-8 rounded-2xl shadow-lg hover:shadow-purple-500/20 border opacity-0">
-            <h3 class="text-2xl font-semibold mb-4 text-purple-400">Kolaborasi Terbuka</h3>
-            <p class="text-gray-300">Soami adalah proyek sumber terbuka yang menyambut kontribusi dari para peneliti, pengembang, dan individu dari seluruh dunia.</p>
-        </div>
-        <div class="card-item p-8 rounded-2xl shadow-lg hover:shadow-purple-500/20 border opacity-0">
-            <h3 class="text-2xl font-semibold mb-4 text-purple-400">Etika & Keamanan</h3>
-            <p class="text-gray-300">Kami memprioritaskan etika, transparansi, dan keamanan dalam setiap aspek pengembangan untuk memastikan AI yang aman dan bermanfaat bagi semua.</p>
-        </div>
-    </section>
-
-    <!-- Contributions Section -->
-    <section id="contributions" class="py-20 relative z-10 container mx-auto px-6">
-        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-purple-400 section-title opacity-0">Evangelis & Kontributor</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 section-content opacity-0">
-            <!-- Tier 1 -->
-            <div class="card-item p-8 rounded-2xl border flex flex-col items-center text-center">
-                <h3 class="text-3xl font-bold text-white mb-4">Kontributor</h3>
-                <p class="text-gray-300">Kontribusi kecil, dampak besar.</p>
-                <div class="my-6">
-                    <i class="fa-solid fa-star text-6xl text-indigo-400"></i>
+    <section class="relative z-10 min-h-screen flex items-center py-12 px-4 md:px-8 lg:px-16">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        AI Universe & <span class="gradient-text">Aggregator Hub</span>
+                    </h2>
+                    <p class="text-lg md:text-xl text-gray-300 mb-8">
+                        Explore intelligent agents & AI tools across the cosmos. Discover, connect, and innovate with the most advanced AI ecosystem.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-lg hover:opacity-90 transition-opacity pulse relative overflow-hidden group">
+                            <span class="relative z-10">Launch Playground</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </button>
+                        <button class="border border-cyan-400 text-cyan-300 font-semibold py-3 px-8 rounded-lg hover:bg-cyan-400 hover:bg-opacity-10 transition-colors">
+                            Discover Agents
+                        </button>
+                    </div>
                 </div>
-                <ul class="text-left text-gray-300 space-y-2 mb-8">
-                    <li>✓ Sebutan di halaman GitHub</li>
-                    <li>✓ Akses buletin eksklusif</li>
-                    <li>✓ Lencana digital kontributor</li>
-                </ul>
-                <a href="#" class="w-full py-3 text-lg font-semibold rounded-full bg-gray-700 hover:bg-gray-600 transition-colors text-center">Lihat Panduan Kontribusi</a>
-            </div>
-            <!-- Tier 2 -->
-            <div class="bg-gradient-to-br from-purple-900 to-indigo-900 p-8 rounded-2xl border-2 border-purple-500 flex flex-col items-center text-center scale-105 bg-gradient-tier-2">
-                <h3 class="text-3xl font-bold text-white mb-4">Evangelis Utama</h3>
-                <p class="text-gray-300">Menjadi pemimpin dan inspirasi.</p>
-                <div class="my-6">
-                    <i class="fa-solid fa-gem text-6xl text-white"></i>
+                
+                <div class="relative fade-in">
+                    <!-- Animated cosmic nodes -->
+                    <div class="relative w-full h-80 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 overflow-hidden">
+                        <!-- Central node -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center pulse">
+                            <span class="text-white font-bold">AI</span>
+                        </div>
+                        
+                        <!-- Orbiting nodes -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="orbit">
+                                <div class="w-8 h-8 rounded-full bg-cyan-400 flex items-center justify-center">
+                                    <span class="text-xs font-bold text-black">NLP</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="orbit" style="animation-duration: 25s; animation-delay: -5s;">
+                                <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center">
+                                    <span class="text-xs font-bold text-white">CV</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="orbit" style="animation-duration: 30s; animation-delay: -10s;">
+                                <div class="w-8 h-8 rounded-full bg-cyan-300 flex items-center justify-center">
+                                    <span class="text-xs font-bold text-black">ML</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Static nodes -->
+                        <div class="absolute top-1/4 left-1/4 w-4 h-4 rounded-full bg-cyan-400 twinkle"></div>
+                        <div class="absolute top-3/4 left-1/3 w-3 h-3 rounded-full bg-purple-500 twinkle" style="animation-delay: 1s;"></div>
+                        <div class="absolute top-1/3 left-3/4 w-5 h-5 rounded-full bg-cyan-300 twinkle" style="animation-delay: 2s;"></div>
+                    </div>
                 </div>
-                <ul class="text-left text-gray-200 space-y-2 mb-8">
-                    <li>✓ Profil di situs web Soami</li>
-                    <li>✓ Akses langsung ke tim inti</li>
-                    <li>✓ Lencana evangelis khusus</li>
-                </ul>
-                <a href="#" class="w-full py-3 text-lg font-semibold rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:opacity-80 transition-opacity bg-gradient-primary text-center">Hubungi Tim Evangelis</a>
-            </div>
-            <!-- Tier 3 -->
-            <div class="card-item p-8 rounded-2xl border flex flex-col items-center text-center">
-                <h3 class="text-3xl font-bold text-white mb-4">Pengembang Inti</h3>
-                <p class="text-gray-300">Membentuk masa depan proyek.</p>
-                <div class="my-6">
-                    <i class="fa-solid fa-code text-6xl text-indigo-400"></i>
-                </div>
-                <ul class="text-left text-gray-300 space-y-2 mb-8">
-                    <li>✓ Keterlibatan di dewan penasihat</li>
-                    <li>✓ Akses ke prototipe awal</li>
-                    <li>✓ Rapat strategis berkala</li>
-                </ul>
-                <a href="#" class="w-full py-3 text-lg font-semibold rounded-full bg-gray-700 hover:bg-gray-600 transition-colors text-center">Hubungi Tim Inti</a>
             </div>
         </div>
     </section>
-
-    <!-- Community Section -->
-    <section id="community" class="py-20 relative z-10 text-center container mx-auto px-6">
-        <h2 class="text-4xl md:text-5xl font-bold mb-6 text-purple-400 section-title opacity-0">Komunitas</h2>
-        <p class="max-w-4xl mx-auto text-lg text-gray-300 mb-8 section-content opacity-0">
-            Bergabunglah dengan komunitas peneliti, pengembang, dan visioner global. Bertukar ide, ajukan pertanyaan, dan bagikan wawasan di forum dan grup kami.
-        </p>
-        <button class="px-8 py-4 text-lg font-semibold rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 shadow-lg hover:shadow-purple-500/40 transform transition-transform hover:scale-110 active:scale-95 bg-gradient-primary">
-            Gabung Sekarang
-        </button>
+    
+    <!-- Features/Agents Section -->
+    <section class="relative z-10 py-16 px-4 md:px-8 lg:px-16">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">AI <span class="gradient-text">Agents</span> & Tools</h2>
+            <p class="text-lg text-gray-400 text-center mb-12">Explore our constellation of intelligent solutions</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Agent Card 1 -->
+                <div class="bg-gray-900 bg-opacity-50 rounded-xl p-6 border border-gray-800 card-glow fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-cyan-900 bg-opacity-50 flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">Nova Analyst</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Advanced data analysis and pattern recognition agent for business intelligence.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-cyan-400 text-sm">AI • Analytics</span>
+                        <button class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">Explore →</button>
+                    </div>
+                </div>
+                
+                <!-- Agent Card 2 -->
+                <div class="bg-gray-900 bg-opacity-50 rounded-xl p-6 border border-gray-800 card-glow fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-purple-900 bg-opacity-50 flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">Orbit Communicator</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Natural language processing agent for seamless human-AI interaction.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-purple-400 text-sm">AI • NLP</span>
+                        <button class="text-purple-400 hover:text-purple-300 text-sm font-medium">Explore →</button>
+                    </div>
+                </div>
+                
+                <!-- Agent Card 3 -->
+                <div class="bg-gray-900 bg-opacity-50 rounded-xl p-6 border border-gray-800 card-glow fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-cyan-900 bg-opacity-50 flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">Quantum Guardian</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Cybersecurity agent with advanced threat detection and prevention capabilities.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-cyan-400 text-sm">AI • Security</span>
+                        <button class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">Explore →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-
+    
+    <!-- Aggregator/Live Feed Section -->
+    <section class="relative z-10 py-16 px-4 md:px-8 lg:px-16">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Live <span class="gradient-text">AI Feed</span></h2>
+            <p class="text-lg text-gray-400 text-center mb-8">Real-time updates from across the AI universe</p>
+            
+            <div class="bg-gray-900 bg-opacity-30 rounded-xl border border-gray-800 overflow-hidden">
+                <!-- Feed Header -->
+                <div class="bg-gray-800 bg-opacity-50 p-4 border-b border-gray-700 flex justify-between items-center">
+                    <h3 class="font-semibold">Recent Activity</h3>
+                    <span class="text-cyan-400 text-sm flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-cyan-400 mr-2 twinkle"></div>
+                        Live
+                    </span>
+                </div>
+                
+                <!-- Feed Items -->
+                <div class="divide-y divide-gray-800 max-h-96 overflow-y-auto">
+                    <!-- Feed Item 1 -->
+                    <div class="p-4 hover:bg-gray-800 hover:bg-opacity-30 transition-colors fade-in">
+                        <div class="flex items-start">
+                            <div class="w-3 h-3 rounded-full bg-cyan-400 mt-1 mr-3 twinkle"></div>
+                            <div>
+                                <p class="font-medium">Nova Analyst v2.3 released</p>
+                                <p class="text-gray-400 text-sm">Enhanced predictive algorithms with 15% improved accuracy</p>
+                                <p class="text-gray-500 text-xs mt-1">2 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feed Item 2 -->
+                    <div class="p-4 hover:bg-gray-800 hover:bg-opacity-30 transition-colors fade-in">
+                        <div class="flex items-start">
+                            <div class="w-3 h-3 rounded-full bg-purple-500 mt-1 mr-3 twinkle" style="animation-delay: 0.5s;"></div>
+                            <div>
+                                <p class="font-medium">New dataset available</p>
+                                <p class="text-gray-400 text-sm">Cosmic imagery dataset with 50k annotated samples added to hub</p>
+                                <p class="text-gray-500 text-xs mt-1">5 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feed Item 3 -->
+                    <div class="p-4 hover:bg-gray-800 hover:bg-opacity-30 transition-colors fade-in">
+                        <div class="flex items-start">
+                            <div class="w-3 h-3 rounded-full bg-cyan-300 mt-1 mr-3 twinkle" style="animation-delay: 1s;"></div>
+                            <div>
+                                <p class="font-medium">Community challenge launched</p>
+                                <p class="text-gray-400 text-sm">Optimize quantum algorithm efficiency - $10k prize pool</p>
+                                <p class="text-gray-500 text-xs mt-1">1 day ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feed Item 4 -->
+                    <div class="p-4 hover:bg-gray-800 hover:bg-opacity-30 transition-colors fade-in">
+                        <div class="flex items-start">
+                            <div class="w-3 h-3 rounded-full bg-purple-400 mt-1 mr-3 twinkle" style="animation-delay: 1.5s;"></div>
+                            <div>
+                                <p class="font-medium">API endpoints updated</p>
+                                <p class="text-gray-400 text-sm">New batch processing endpoints available for high-volume tasks</p>
+                                <p class="text-gray-500 text-xs mt-1">2 days ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Footer -->
-    <footer class="bg-black/80 backdrop-blur-xl py-12 relative z-10 mt-20">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
-                <!-- Logo & Copyright -->
-                <div class="mb-6 md:mb-0">
-                    <a href="#hero" class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500 mb-2">
-                        Soami Project
-                    </a>
-                    <p class="text-gray-400 mt-2">&copy; 2024 Soami Project. All Rights Reserved.</p>
-                </div>
-
-                <!-- Footer Links -->
-                <div class="flex flex-col md:flex-row justify-around col-span-2">
-                    <!-- Column 1 -->
-                    <div>
-                        <h4 class="font-bold text-gray-200 mb-3">Resources</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <li><a href="#research" class="hover:text-white transition-colors">Research</a></li>
-                            <li><a href="#contributions" class="hover:text-white transition-colors">Kontribusi</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
-                        </ul>
+    <footer class="relative z-10 py-12 px-4 md:px-8 lg:px-16 border-t border-gray-800">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-3 h-3 rounded-full bg-cyan-400 twinkle"></div>
+                        <h2 class="text-2xl font-bold text-white">Soami<span class="gradient-text">Project</span></h2>
                     </div>
-                    <!-- Column 2 -->
-                    <div>
-                        <h4 class="font-bold text-gray-200 mb-3 mt-6 md:mt-0">Company</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Team</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-                        </ul>
-                    </div>
-                    <!-- Column 3 -->
-                    <div>
-                        <h4 class="font-bold text-gray-200 mb-3 mt-6 md:mt-0">Community</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <li><a href="#community" class="hover:text-white transition-colors">Discord</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Twitter</a></li>
-                        </ul>
+                    <p class="text-gray-400 mb-6">Exploring the frontiers of artificial intelligence across the universe.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
                     </div>
                 </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Explore</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">AI Agents</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">Tools</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">Playground</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">Documentation</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-300 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2023 Cosmic AI Universe. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- GSAP & ScrollTrigger CDNs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
     <script>
-        gsap.registerPlugin(ScrollTrigger);
-
-        window.addEventListener('load', () => {
-            // Dark/Light mode logic
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            const sunIcon = document.getElementById('sun-icon');
-            const moonIcon = document.getElementById('moon-icon');
-            const body = document.body;
-
-            const storedTheme = localStorage.getItem('theme') || 'dark';
-            if (storedTheme === 'light') {
-                body.classList.remove('dark');
-                body.classList.add('light');
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
+        // Three.js Universe Background
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for reduced motion preference
+            const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+            
+            if (mediaQuery.matches) {
+                // Fallback gradient background for reduced motion
+                document.getElementById('universe-canvas').innerHTML = '<div class="w-full h-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900"></div>';
+                return;
             }
-
-            themeToggleBtn.addEventListener('click', () => {
-                if (body.classList.contains('dark')) {
-                    body.classList.remove('dark');
-                    body.classList.add('light');
-                    localStorage.setItem('theme', 'light');
-                    sunIcon.style.display = 'block';
-                    moonIcon.style.display = 'none';
+            
+            // Three.js setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            document.getElementById('universe-canvas').appendChild(renderer.domElement);
+            
+            // Create stars/particles
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsCount = 1500;
+            
+            const starsPositions = new Float32Array(starsCount * 3);
+            const starsColors = new Float32Array(starsCount * 3);
+            
+            for(let i = 0; i < starsCount * 3; i++) {
+                starsPositions[i] = (Math.random() - 0.5) * 2000;
+                
+                // Random colors (cyan, purple, white)
+                const colorChoice = Math.random();
+                if (colorChoice < 0.4) {
+                    starsColors[i] = 0.2 + Math.random() * 0.8; // Cyan
+                } else if (colorChoice < 0.7) {
+                    starsColors[i] = 0.5 + Math.random() * 0.5; // Purple
                 } else {
-                    body.classList.remove('light');
-                    body.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'block';
-                }
-            });
-
-            // Hero Title Animation
-            gsap.fromTo(
-                '#hero-title',
-                { opacity: 0, y: 50 },
-                { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }
-            );
-
-            // Three.js Model Fade-in Animation
-            gsap.fromTo(
-                '#hero-model-container',
-                { opacity: 0, scale: 0.5 },
-                { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)", delay: 0.8 }
-            );
-
-            // Parallax Scroll for Layers
-            gsap.to('#layer-1', {
-                yPercent: 30,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: 'body',
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: true
-                }
-            });
-            gsap.to('#layer-2', {
-                yPercent: 60,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: 'body',
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: true
-                }
-            });
-            gsap.to('#layer-3', {
-                yPercent: 90,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: 'body',
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: true
-                }
-            });
-
-            // Staggered lazyload effect for cards
-            gsap.utils.toArray('.card-item').forEach((card, i) => {
-                gsap.fromTo(
-                    card,
-                    { opacity: 0, y: 50 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.8,
-                        ease: "power2.out",
-                        scrollTrigger: {
-                            trigger: card,
-                            start: "top 80%",
-                            toggleActions: "play none none none",
-                        },
-                        delay: i * 0.2,
-                    }
-                );
-            });
-
-            // Fade-in effect for all new sections
-            gsap.utils.toArray('section:not(#hero)').forEach(section => {
-                gsap.fromTo(
-                    section.querySelectorAll('.section-title, .section-content, button, a, .card-item, h4, ul'),
-                    { opacity: 0, y: 30 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 1,
-                        stagger: 0.2,
-                        ease: "power2.out",
-                        scrollTrigger: {
-                            trigger: section,
-                            start: "top 75%",
-                            toggleActions: "play none none none",
-                        }
-                    }
-                );
-            });
-
-            // Header & Hamburger Menu Logic
-            const navbar = document.getElementById('navbar');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const hamburgerBtn = document.getElementById('hamburger-btn');
-            const closeBtn = document.getElementById('close-btn');
-
-            hamburgerBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('is-active');
-            });
-            closeBtn.addEventListener('click', () => {
-                mobileMenu.classList.remove('is-active');
-            });
-            
-            let lastScrollTop = 0;
-            window.addEventListener('scroll', () => {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollTop > lastScrollTop && scrollTop > 100) {
-                    gsap.to(navbar, { opacity: 0, y: '-100%', duration: 0.3 });
-                } else if (scrollTop < lastScrollTop || scrollTop < 100) {
-                    gsap.to(navbar, { opacity: 1, y: '0%', duration: 0.3 });
-                }
-                lastScrollTop = scrollTop;
-            });
-
-            // Three.js Code
-            const container = document.getElementById('hero-model-container');
-            let scene, camera, renderer, geometry, material, mesh;
-            let mouseX = 0, mouseY = 0;
-            let targetX = 0, targetY = 0;
-            const windowHalfX = window.innerWidth / 2;
-            const windowHalfY = window.innerHeight / 2;
-            
-            function init() {
-                // Scene
-                scene = new THREE.Scene();
-
-                // Camera
-                camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-                camera.position.z = 2;
-
-                // Renderer
-                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                renderer.setPixelRatio(window.devicePixelRatio);
-                container.appendChild(renderer.domElement);
-
-                // Object (Torus)
-                geometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
-                material = new THREE.MeshNormalMaterial();
-                mesh = new THREE.Mesh(geometry, material);
-                scene.add(mesh);
-
-                // Handle window resizing
-                window.addEventListener('resize', onWindowResize, false);
-                function onWindowResize() {
-                    camera.aspect = container.clientWidth / container.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(container.clientWidth, container.clientHeight);
-                }
-
-                // Mouse interaction for camera movement
-                container.addEventListener('mousemove', onMouseMove);
-                function onMouseMove(event) {
-                    mouseX = (event.clientX - windowHalfX);
-                    mouseY = (event.clientY - windowHalfY);
+                    starsColors[i] = 0.7 + Math.random() * 0.3; // White
                 }
             }
-
+            
+            starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+            starsGeometry.setAttribute('color', new THREE.BufferAttribute(starsColors, 3));
+            
+            const starsMaterial = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+            
+            // Create constellation lines
+            const linesMaterial = new THREE.LineBasicMaterial({
+                color: 0x00c3ff,
+                transparent: true,
+                opacity: 0.1
+            });
+            
+            // Add some random lines between stars
+            for(let i = 0; i < 100; i++) {
+                const startIndex = Math.floor(Math.random() * starsCount);
+                const endIndex = Math.floor(Math.random() * starsCount);
+                
+                const points = [];
+                points.push(new THREE.Vector3(
+                    starsPositions[startIndex * 3],
+                    starsPositions[startIndex * 3 + 1],
+                    starsPositions[startIndex * 3 + 2]
+                ));
+                points.push(new THREE.Vector3(
+                    starsPositions[endIndex * 3],
+                    starsPositions[endIndex * 3 + 1],
+                    starsPositions[endIndex * 3 + 2]
+                ));
+                
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                const line = new THREE.Line(lineGeometry, linesMaterial);
+                scene.add(line);
+            }
+            
+            camera.position.z = 5;
+            
+            // Animation
             function animate() {
                 requestAnimationFrame(animate);
-
-                targetX = mouseX * 0.001;
-                targetY = mouseY * 0.001;
                 
-                // Rotasi objek berdasarkan pergerakan mouse
-                mesh.rotation.y += 0.01;
-                mesh.rotation.x += 0.005;
-
-                camera.position.x += (targetX - camera.position.x) * 0.05;
-                camera.position.y += (-targetY - camera.position.y) * 0.05;
-                camera.lookAt(scene.position);
-
+                stars.rotation.x += 0.0001;
+                stars.rotation.y += 0.0002;
+                
                 renderer.render(scene, camera);
             }
-
-            // Jalankan Three.js saat halaman dimuat
-            init();
+            
             animate();
+            
+            // Resize handler
+            window.addEventListener('resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // Mouse move interaction for stars
+            document.addEventListener('mousemove', function(e) {
+                const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+                
+                stars.rotation.x = mouseY * 0.05;
+                stars.rotation.y = mouseX * 0.05;
+            });
+            
+            // Star cursor effect
+            const cursorStar = document.getElementById('cursor-star');
+            document.addEventListener('mousemove', function(e) {
+                cursorStar.style.left = e.clientX + 'px';
+                cursorStar.style.top = e.clientY + 'px';
+                cursorStar.style.opacity = '1';
+            });
+            
+            document.addEventListener('mouseleave', function() {
+                cursorStar.style.opacity = '0';
+            });
+            
+            // Scroll animations for fade-in elements
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('visible');
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', fadeInOnScroll);
+            fadeInOnScroll(); // Check on load
         });
     </script>
 </body>
